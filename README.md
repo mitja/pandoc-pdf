@@ -218,7 +218,7 @@ filters/source-info.lua     language and footer
 filters/table-autowidth.lua column widths from cell content
 filters/table-rules.lua     hairline between rows
 filters/mermaid.lua         diagrams
-example/showcase.md         a document that exercises all of it
+example/showcase.md         a document about the theme, set by the theme
 install.sh                  links the defaults into pandoc's data directory
 fetch-mermaid.sh            downloads mermaid.min.js into vendor/
 ```
