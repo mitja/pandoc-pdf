@@ -223,6 +223,16 @@ install.sh                  links the defaults into pandoc's data directory
 fetch-mermaid.sh            downloads mermaid.min.js into vendor/
 ```
 
+## License
+
+MIT, see `LICENSE`.
+
+Pandoc itself is GPL-2.0-or-later. Nothing here contains pandoc code: the
+defaults file and the filters are input pandoc reads, the same as a document or
+a template, which is why pandoc's own collection of Lua filters is MIT too.
+`fetch-mermaid.sh` downloads mermaid, which is MIT, and is not redistributed
+here.
+
 ## Known limits
 
 - A diagram wider than the text block is scaled to fit, and its labels shrink
