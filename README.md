@@ -6,6 +6,11 @@ A pandoc defaults file and four Lua filters that turn Markdown into an A4 PDF.
 pandoc -d pandoc-pdf document.md -o document.pdf
 ```
 
+[**example/showcase.pdf**](example/showcase.pdf) is what it produces: a document
+that describes the theme and is set by it, so the tables, hairlines, code sizing
+and diagrams on the page are the thing being described. Its source is
+[example/showcase.md](example/showcase.md).
+
 It fixes four things that plain pandoc does not do well.
 
 **Table columns are sized by their content.** Pandoc takes column widths from
@@ -219,6 +224,7 @@ filters/table-autowidth.lua column widths from cell content
 filters/table-rules.lua     hairline between rows
 filters/mermaid.lua         diagrams
 example/showcase.md         a document about the theme, set by the theme
+example/showcase.pdf        the same document rendered, checked in so it can be read here
 install.sh                  links the defaults into pandoc's data directory
 fetch-mermaid.sh            downloads mermaid.min.js into vendor/
 ```
