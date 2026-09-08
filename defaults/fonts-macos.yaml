@@ -1,0 +1,17 @@
+# Fonts that ship with macOS. Layer it on the base theme:
+#
+#   pandoc -d pandoc-pdf -d fonts-macos document.md -o document.pdf
+#
+# Charter is the text face the column-width estimates in table-autowidth.lua
+# were measured against, and Menlo the one the 89-column figure for code blocks
+# comes from. Any other serif and monospace pair works; the numbers shift a
+# little.
+#
+# Only variables here, no header-includes: a second defaults file replaces that
+# variable rather than adding to it, which would drop everything the base sets.
+variables:
+  mainfont: Charter            # body text
+  sansfont: Seravek            # headings, footer
+  monofont: Menlo              # code blocks and inline code
+  monofontoptions: Scale=MatchLowercase
+  CJKmainfont: Hiragino Sans GB

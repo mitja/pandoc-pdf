@@ -1,0 +1,98 @@
+# A4 PDF theme for Markdown, built on XeLaTeX and KOMA-Script.
+#
+#   pandoc -d pandoc-pdf document.md -o document.pdf
+#
+# Sets no fonts, so it works with whatever the TeX installation provides.
+# Add -d fonts-macos for the fonts this was designed around.
+pdf-engine: xelatex
+
+filters:
+  - ${.}/../filters/source-info.lua     # language and footer, from the file name
+  - ${.}/../filters/table-autowidth.lua # column widths from cell content
+  - ${.}/../filters/table-rules.lua     # hairline between table rows
+  - ${.}/../filters/mermaid.lua         # ```mermaid blocks as diagrams
+
+metadata:
+  # table-autowidth.lua needs the text area to work out how much room a table
+  # has. Change these together with geometry and fontsize below.
+  table-line-width: 426.8pt   # A4 (210mm) less the left and right margins
+  table-font-size: 11pt
+
+variables:
+  # Layout
+  documentclass: scrartcl     # KOMA-Script article: sans headings, modern spacing
+  papersize: a4
+  fontsize: 11pt
+  geometry:
+    - left=30mm
+    - right=30mm
+    - top=28mm
+    - bottom=32mm
+  linestretch: 1.15
+  colorlinks: true
+  linkcolor: NavyBlue
+  urlcolor: NavyBlue
+
+  # ~~strikeout~~, ==highlight== and underline make pandoc load soul, which a
+  # small TeX installation does not ship, and the render dies on a missing
+  # soul.sty. Emptying this drops pandoc's own \usepackage{soul} so
+  # header-includes below can load it only when it is really there.
+  strikeout: ""
+
+  header-includes: |
+    % Strikeout and friends. soul if the installation has it, otherwise ulem,
+    % whose \sout looks all but the same. Install soul (tlmgr install soul) and
+    % it gets picked up here without any change.
+    \IfFileExists{soul.sty}{\usepackage{soul}}{\usepackage[normalem]{ulem}}
+    % No-ops when soul is loaded, since it defines all three itself.
+    \providecommand{\st}[1]{\sout{#1}}
+    \providecommand{\ul}[1]{\uline{#1}}
+    \providecommand{\hl}[1]{\colorbox{yellow!30}{#1}}
+    % Symbols many text faces lack, taken from the sans and mono families
+    % instead. Harmless when the main font has them.
+    \usepackage{newunicodechar}
+    \newunicodechar{→}{{\sffamily\symbol{"2192}}}
+    \newunicodechar{←}{{\sffamily\symbol{"2190}}}
+    \newunicodechar{↑}{{\sffamily\symbol{"2191}}}
+    \newunicodechar{↓}{{\sffamily\symbol{"2193}}}
+    \newunicodechar{▲}{{\ttfamily\symbol{"25B2}}}
+    \newunicodechar{✓}{{\ttfamily\symbol{"2713}}}
+    \newunicodechar{✗}{{\ttfamily\symbol{"2717}}}
+    % Only real CJK characters go to the CJK font; punctuation, arrows, bullets
+    % and other symbols stay in the main font. Only applies when a CJK font is
+    % set, which is what loads xeCJK in the first place.
+    \ifdefined\xeCJKDeclareCharClass
+      \xeCJKDeclareCharClass{Default}{"2000 -> "2BFF}
+    \fi
+    % A hairline between table rows, light enough not to compete with the
+    % booktabs rules that close the head and the foot. Placed by
+    % table-rules.lua, which writes \rowrule at the start of each row.
+    % \specialrule keeps the rule to the width of the table, where a bare
+    % \hrule would run the width of the page; colortbl supplies the colour.
+    \usepackage{colortbl}
+    \newcommand{\rowrule}{%
+      \arrayrulecolor{black!14}\specialrule{0.4pt}{1.5pt}{1.5pt}\arrayrulecolor{black}}
+    % Code blocks one step down from the body size, which fits about 20% more
+    % characters per line. Both of pandoc's environments need it -- Highlighting
+    % for fenced blocks that name a language, plain verbatim for those that do
+    % not. fancyvrb is only loaded when a highlighted block exists, hence the
+    % guard. Inline code is left at body size.
+    \makeatletter
+    \@ifpackageloaded{fancyvrb}{%
+      \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},fontsize=\footnotesize}%
+    }{}
+    \g@addto@macro\@verbatim{\footnotesize}
+    \makeatother
+    % Footer: where the page came from (left), page number (right). The address
+    % goes on the left rather than the middle because it is the long part.
+    % source-info.lua sets it to the address the page has on the site it belongs
+    % to, or to the output file name for anything else.
+    \usepackage[footsepline=0.4pt]{scrlayer-scrpage}
+    \clearpairofpagestyles
+    \providecommand*{\pdffooter}{}
+    \setkomafont{pageheadfoot}{\normalfont\footnotesize\sffamily\color{gray}}
+    \setkomafont{pagenumber}{\normalfont\footnotesize\sffamily\color{gray}}
+    \setkomafont{footsepline}{\color{lightgray}}
+    \ifoot*{\pdffooter}
+    \ofoot*{\pagemark}
+    \pagestyle{scrheadings}
